@@ -100,7 +100,7 @@ const App: React.FC = () => {
                 <div className="w-1.5 h-1.5 bg-amber-400 rounded-full animate-pulse" style={{ animationDelay: '0.2s'}} />
              </div>
              <div className="flex flex-col items-center gap-2">
-                <span className="text-black">Gemini 2.0</span>
+                <span className="text-black">Gemini 3.0</span>
                 <div className="w-1.5 h-1.5 bg-amber-400 rounded-full animate-pulse" style={{ animationDelay: '0.4s'}} />
              </div>
           </div>
