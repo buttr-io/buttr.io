@@ -92,7 +92,7 @@ const App: React.FC = () => {
           
           <div className="mt-12 flex items-center justify-center gap-8 text-[10px] font-bold uppercase tracking-[0.3em] text-gray-400">
              <div className="flex flex-col items-center gap-2">
-                <span className="text-black">GPT-4o</span>
+                <span className="text-black">GPT-5</span>
                 <div className="w-1.5 h-1.5 bg-amber-400 rounded-full animate-pulse" />
              </div>
              <div className="flex flex-col items-center gap-2">

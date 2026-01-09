@@ -6,7 +6,7 @@ import { createClient } from '@supabase/supabase-js'
 const inDevMode = process.env.DEV === "true";
 console.log("inDevMode: ", inDevMode);
 if(!process.env.NEXT_PUBLIC_SUPABASE_URL) throw "Requires Supabase Url";
-if(!process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) throw "Requires Supabase Url";
+if(!process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) throw "Requires Supabase Key";
 
 const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY)
 
