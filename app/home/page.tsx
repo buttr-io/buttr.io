@@ -1,17 +1,45 @@
 "use client"
 
+import { addToWaitlist } from "@/lib/services/postgressDB";
 import React, { useState, useEffect, useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
+
+export type FormValues = {
+  name: string;
+  email: string;
+  contact_number: string;
+  brand: string;
+  purpose: string;
+}
+
+const recordWaitlistSignup = async (data: FormValues) => {
+  // akalgutkar: Not sure why we are doing this. Recheck & remove if unnecessary.
+
+  const existing = JSON.parse(localStorage.getItem('buttr_waitlist') || '[]');
+  localStorage.setItem('buttr_waitlist', JSON.stringify([...existing, { ...data, date: new Date().toISOString() }]));
+
+  // API Call
+  return new Promise((resolve) => setTimeout(() => {
+    const res = addToWaitlist(data)
+    resolve(res)
+  }, 1500));
+};
 
 const App: React.FC = () => {
   // --- State Management ---
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [formPurpose, setFormPurpose] = useState("I want a novel AI/ML solution");
   const [formStep, setFormStep] = useState<'input' | 'success'>('input');
-  
+  const [formValues, setFormValues] = useState<FormValues>({
+    name: '',
+    email: '',
+    contact_number: '',
+    brand: '',
+    purpose: 'I want a novel AI/ML solution'
+  });
+
   // --- Refs for Animation ---
   const trailRef = useRef<HTMLDivElement>(null);
-  
+
   // --- Framer Motion (Optional: Keeping your original logic if needed) ---
   const { scrollYProgress } = useScroll();
   const opacity = useTransform(scrollYProgress, [0, 0.2], [1, 0]);
@@ -19,7 +47,7 @@ const App: React.FC = () => {
 
   // --- Modal Functions ---
   const openForm = (purpose?: string) => {
-    if (purpose) setFormPurpose(purpose);
+    if (purpose) setFormValues({ ...formValues, purpose: purpose });
     setFormStep('input');
     setIsModalOpen(true);
     document.body.style.overflow = 'hidden';
@@ -30,26 +58,21 @@ const App: React.FC = () => {
     document.body.style.overflow = 'auto';
   };
 
-  // --- Form Handlers ---
-  const handlePhoneValidation = (e: React.ChangeEvent<HTMLInputElement>) => {
-    e.target.value = e.target.value.replace(/[^0-9+\-]/g, '');
-  };
-
-  const handleFormSubmit = (e: React.FormEvent) => {
+  const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
     // Get values directly from the form form-data or refs
     // For this simple example, we just check validity and toggle state
     const form = e.target as HTMLFormElement;
     if (form.checkValidity()) {
-        setFormStep('success');
+      await recordWaitlistSignup(formValues);
+      setFormStep('success');
     }
   };
 
   // --- Effect: Cursor Trail Animation ---
   useEffect(() => {
     const trail = trailRef.current;
-    let mouseX = 0, mouseY = 0; 
+    let mouseX = 0, mouseY = 0;
     let trailX = 0, trailY = 0;
     let animationFrameId: number;
 
@@ -62,7 +85,7 @@ const App: React.FC = () => {
     const animateCursor = () => {
       trailX += (mouseX - trailX) * 0.15;
       trailY += (mouseY - trailY) * 0.15;
-      
+
       if (trail) {
         trail.style.transform = `translate(${trailX - 10}px, ${trailY - 10}px)`;
       }
@@ -92,7 +115,7 @@ const App: React.FC = () => {
 
     // Target specific elements to animate
     const elements = document.querySelectorAll('.animate-on-scroll, section h2, .glass-dark');
-    
+
     elements.forEach(el => {
       const target = el as HTMLElement;
       // Set initial styles for animation
@@ -112,37 +135,35 @@ const App: React.FC = () => {
       <div ref={trailRef} id="trail" className="cursor-trail fixed top-0 left-0 w-5 h-5 bg-[#F4D35E] rounded-full pointer-events-none z-[9999] opacity-0 mix-blend-difference"></div>
 
       {/* Modal Form */}
-      <div 
-        id="contactModal" 
-        className={`modal-overlay fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm transition-all duration-300 ${
-          isModalOpen ? 'active opacity-100 visible pointer-events-auto' : 'opacity-0 invisible pointer-events-none'
-        }`} 
+      <div
+        id="contactModal"
+        className={`modal-overlay fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm transition-all duration-300 ${isModalOpen ? 'active opacity-100 visible pointer-events-auto' : 'opacity-0 invisible pointer-events-none'
+          }`}
         onClick={closeModal}
       >
-        <div 
-          className={`modal-content bg-white p-8 md:p-10 shadow-2xl relative w-full max-w-lg rounded-3xl mx-4 transition-all duration-300 transform ${
-             isModalOpen ? 'scale-100 translate-y-0' : 'scale-95 translate-y-4'
-          }`}
+        <div
+          className={`modal-content bg-white p-8 md:p-10 shadow-2xl relative w-full max-w-lg rounded-3xl mx-4 transition-all duration-300 transform ${isModalOpen ? 'scale-100 translate-y-0' : 'scale-95 translate-y-4'
+            }`}
           onClick={(e) => e.stopPropagation()}
         >
           <button onClick={closeModal} className="absolute top-6 right-6 text-gray-400 hover:text-black transition-colors">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
           </button>
-          
+
           {formStep === 'input' ? (
             <div id="formContainer">
               <h3 className="text-3xl font-extrabold mb-2">Let's connect.</h3>
               <p className="text-gray-500 mb-8 text-sm">Tell us about your project and we'll get back to you within 24 hours.</p>
-              
+
               <form id="strategyForm" onSubmit={handleFormSubmit} className="space-y-5">
                 <div>
                   <label className="block text-sm font-bold mb-1">Purpose</label>
                   <div className="relative">
-                    <select 
-                      id="field-purpose" 
+                    <select
+                      id="field-purpose"
                       className="input-field w-full bg-gray-50 border border-gray-200 rounded-lg p-3 appearance-none cursor-pointer pr-10 focus:outline-none focus:ring-2 focus:ring-[#F4D35E]"
-                      value={formPurpose}
-                      onChange={(e) => setFormPurpose(e.target.value)}
+                      value={formValues.purpose}
+                      onChange={(e) => setFormValues({ ...formValues, purpose: e.target.value })}
                     >
                       <option value="I want a novel AI/ML solution">I want a novel AI/ML solution</option>
                       <option value="I want to get a free GEO brand audit done">I want to get a free GEO brand audit done</option>
@@ -151,38 +172,71 @@ const App: React.FC = () => {
                       <option value="Other query">Other query</option>
                     </select>
                     <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="m6 9 6 6 6-6" /></svg>
                     </div>
                   </div>
                 </div>
-                
+
                 <div>
                   <label className="block text-sm font-bold mb-1">Your Name *</label>
-                  <input type="text" id="field-name" className="input-field w-full bg-gray-50 border border-gray-200 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-[#F4D35E]" placeholder="John Doe" required />
+                  <input
+                    id="field-name"
+                    value={formValues.name}
+                    type="text"
+                    className="input-field w-full bg-gray-50 border border-gray-200 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-[#F4D35E]"
+                    onChange={e => {
+                      setFormValues({ ...formValues, name: e.target.value })
+                    }}
+                    placeholder="John Doe" required />
                 </div>
-                
+
                 <div>
                   <label className="block text-sm font-bold mb-1">Email *</label>
-                  <input type="email" id="field-email" className="input-field w-full bg-gray-50 border border-gray-200 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-[#F4D35E]" placeholder="john@company.com" required />
+                  <input
+                    id="field-email"
+                    value={formValues.email}
+                    type="email"
+                    className="input-field w-full bg-gray-50 border border-gray-200 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-[#F4D35E]"
+                    onChange={e => {
+                      setFormValues({ ...formValues, email: e.target.value })
+                    }}
+                    placeholder="john@company.com" required />
                 </div>
-                
+
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-bold mb-1">Phone (Optional)</label>
-                    <input 
-                      type="text" 
-                      id="field-phone" 
-                      className="input-field w-full bg-gray-50 border border-gray-200 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-[#F4D35E]" 
-                      placeholder="+1-234-567" 
-                      onChange={handlePhoneValidation}
+                    <input
+                      value={formValues.contact_number}
+                      type="text"
+                      id="field-phone"
+                      className="input-field w-full bg-gray-50 border border-gray-200 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-[#F4D35E]"
+                      placeholder="+1-234-567"
+                      onChange={e => {
+                        const newNumber = e.target.value;
+                        if (newNumber != "" &&
+                          (newNumber[newNumber.length - 1] < "0" || newNumber[newNumber.length - 1] > "9") || // Number check
+                          (newNumber.length > 20) // Number check
+                        ) return
+
+                        setFormValues({ ...formValues, contact_number: newNumber })
+                      }}
                     />
                   </div>
                   <div>
                     <label className="block text-sm font-bold mb-1">Brand / Website (Optional)</label>
-                    <input type="text" id="field-website" className="input-field w-full bg-gray-50 border border-gray-200 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-[#F4D35E]" placeholder="buttr.io" />
+                    <input
+                      type="text"
+                      value={formValues.brand}
+                      id="field-website"
+                      className="input-field w-full bg-gray-50 border border-gray-200 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-[#F4D35E]"
+                      onChange={e => {
+                        setFormValues({ ...formValues, brand: e.target.value })
+                      }}
+                      placeholder="brand.com" />
                   </div>
                 </div>
-                
+
                 <button type="submit" className="w-full bg-black text-white py-4 rounded-xl font-bold mt-4 hover:bg-[#F4D35E] hover:text-black transition-all shadow-lg">
                   Send Request
                 </button>
@@ -223,13 +277,13 @@ const App: React.FC = () => {
       {/* */}
       <section className="min-h-screen flex flex-col justify-between items-center text-center px-4 md:px-6 pt-32 pb-12 relative bg-[#FFFDF5] overflow-hidden">
         <div className="keynote-bg absolute inset-0 pointer-events-none">
-            {/* Note: Ensure you have CSS for .glow-circle or replace with inline styles/Tailwind */}
-            <div className="glow-circle glow-1"></div>
-            <div className="glow-circle glow-2"></div>
+          {/* Note: Ensure you have CSS for .glow-circle or replace with inline styles/Tailwind */}
+          <div className="glow-circle glow-1"></div>
+          <div className="glow-circle glow-2"></div>
         </div>
         <div className="flex-1 flex flex-col justify-center items-center w-full z-10">
           <h1 className="text-5xl md:text-8xl font-extrabold tracking-tight mb-6 text-black leading-tight animate-hero-pop">
-            Artificial Intelligence <br/><span className="text-[#F4D35E]">made smooth.</span>
+            Artificial Intelligence <br /><span className="text-[#F4D35E]">made smooth.</span>
           </h1>
           <p className="max-w-2xl text-base md:text-xl text-gray-500 mb-10 leading-relaxed animate-hero-pop delay-1">
             From custom AI systems to generative engine optimization and real-time LLM monitoring, we help brands win in the AI-first web.

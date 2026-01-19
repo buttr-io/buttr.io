@@ -3,7 +3,7 @@ import { Metadata } from "next"
 
 export const metadata: Metadata = {
   title: {
-    default: 'Buttr.io | Smooth Market Intelligence for the LLM Era',
+    default: 'Buttr.io | AI & GEO Made Smooth',
     template: '%s | Coming Soon',
   },
   description: 'The future of X',

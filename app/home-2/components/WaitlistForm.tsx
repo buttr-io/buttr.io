@@ -20,8 +20,9 @@ const recordWaitlistSignup = async (data: WaitlistData) => {
   
   // API Call
   return new Promise((resolve) => setTimeout(() =>{
-    const res = addToWaitlist(data)
-    resolve(res)
+    // Uncomment if needed akalgutkar has commented it out.
+    // const res = addToWaitlist(data)
+    // resolve(res)
   }, 1500));
 };
 
