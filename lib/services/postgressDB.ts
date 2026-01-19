@@ -1,5 +1,5 @@
 
-import { WaitlistData } from '@/app/coming-soon/components/WaitlistForm';
+import { WaitlistData } from '@/app/home/components/WaitlistForm';
 
 import { createClient } from '@supabase/supabase-js'
 

@@ -8,7 +8,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { MessageCircle, X, Send, Sparkles } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { sendMessageToGemini } from '../../../lib/services/geminiService';
-import { ChatMessage } from './../types/types';
+import { ChatMessage } from '../types/types';
 
 const AIChat: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);

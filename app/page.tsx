@@ -8,16 +8,7 @@ import App from "./App";
 import { Redirect } from "@/lib/shared-components/Redirect";
 
 const Page: React.FC = () => {
-  
-  
-  return <Redirect path={"/coming-soon"}/>
-  
-  // return (
-  //   <>
-  //     <AppShell />
-  //     <App />
-  //   </>
-  // );
+  return <Redirect path={"/home"}/>
 };
 
 export default Page;
