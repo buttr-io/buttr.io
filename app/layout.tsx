@@ -21,7 +21,6 @@ export default function RootLayout({
       </head>
       <body>
         <div id="root"></div>
-        {/* <script type="module" src="/index.tsx"></script> */}
         {children}
       </body>
     </html>

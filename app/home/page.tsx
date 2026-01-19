@@ -111,86 +111,95 @@ const App: React.FC = () => {
       {/* Custom Cursor Element */}
       <div ref={trailRef} id="trail" className="cursor-trail fixed top-0 left-0 w-5 h-5 bg-[#F4D35E] rounded-full pointer-events-none z-[9999] opacity-0 mix-blend-difference"></div>
 
-      {/* */}
-      {isModalOpen && (
-        <div id="contactModal" className="modal-overlay fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm transition-all" onClick={closeModal}>
-          <div className="modal-content bg-white p-8 md:p-10 shadow-2xl relative w-full max-w-lg rounded-3xl mx-4" onClick={(e) => e.stopPropagation()}>
-            <button onClick={closeModal} className="absolute top-6 right-6 text-gray-400 hover:text-black transition-colors">
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-            </button>
-            
-            {formStep === 'input' ? (
-              <div id="formContainer">
-                <h3 className="text-3xl font-extrabold mb-2">Let's connect.</h3>
-                <p className="text-gray-500 mb-8 text-sm">Tell us about your project and we'll get back to you within 24 hours.</p>
-                
-                <form id="strategyForm" onSubmit={handleFormSubmit} className="space-y-5">
-                  <div>
-                    <label className="block text-sm font-bold mb-1">Purpose</label>
-                    <div className="relative">
-                      <select 
-                        id="field-purpose" 
-                        className="input-field w-full bg-gray-50 border border-gray-200 rounded-lg p-3 appearance-none cursor-pointer pr-10 focus:outline-none focus:ring-2 focus:ring-[#F4D35E]"
-                        value={formPurpose}
-                        onChange={(e) => setFormPurpose(e.target.value)}
-                      >
-                        <option value="I want a novel AI/ML solution">I want a novel AI/ML solution</option>
-                        <option value="I want to get a free GEO brand audit done">I want to get a free GEO brand audit done</option>
-                        <option value="I want to discuss my GEO strategy">I want to discuss my GEO strategy</option>
-                        <option value="I want to join the waitlist for the GEO monitoring Saas">I want to join the waitlist for the GEO monitoring Saas</option>
-                        <option value="Other query">Other query</option>
-                      </select>
-                      <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="m6 9 6 6 6-6"/></svg>
-                      </div>
+      {/* Modal Form */}
+      <div 
+        id="contactModal" 
+        className={`modal-overlay fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm transition-all duration-300 ${
+          isModalOpen ? 'active opacity-100 visible pointer-events-auto' : 'opacity-0 invisible pointer-events-none'
+        }`} 
+        onClick={closeModal}
+      >
+        <div 
+          className={`modal-content bg-white p-8 md:p-10 shadow-2xl relative w-full max-w-lg rounded-3xl mx-4 transition-all duration-300 transform ${
+             isModalOpen ? 'scale-100 translate-y-0' : 'scale-95 translate-y-4'
+          }`}
+          onClick={(e) => e.stopPropagation()}
+        >
+          <button onClick={closeModal} className="absolute top-6 right-6 text-gray-400 hover:text-black transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+          </button>
+          
+          {formStep === 'input' ? (
+            <div id="formContainer">
+              <h3 className="text-3xl font-extrabold mb-2">Let's connect.</h3>
+              <p className="text-gray-500 mb-8 text-sm">Tell us about your project and we'll get back to you within 24 hours.</p>
+              
+              <form id="strategyForm" onSubmit={handleFormSubmit} className="space-y-5">
+                <div>
+                  <label className="block text-sm font-bold mb-1">Purpose</label>
+                  <div className="relative">
+                    <select 
+                      id="field-purpose" 
+                      className="input-field w-full bg-gray-50 border border-gray-200 rounded-lg p-3 appearance-none cursor-pointer pr-10 focus:outline-none focus:ring-2 focus:ring-[#F4D35E]"
+                      value={formPurpose}
+                      onChange={(e) => setFormPurpose(e.target.value)}
+                    >
+                      <option value="I want a novel AI/ML solution">I want a novel AI/ML solution</option>
+                      <option value="I want to get a free GEO brand audit done">I want to get a free GEO brand audit done</option>
+                      <option value="I want to discuss my GEO strategy">I want to discuss my GEO strategy</option>
+                      <option value="I want to join the waitlist for the GEO monitoring Saas">I want to join the waitlist for the GEO monitoring Saas</option>
+                      <option value="Other query">Other query</option>
+                    </select>
+                    <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="m6 9 6 6 6-6"/></svg>
                     </div>
                   </div>
-                  
-                  <div>
-                    <label className="block text-sm font-bold mb-1">Your Name *</label>
-                    <input type="text" id="field-name" className="input-field w-full bg-gray-50 border border-gray-200 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-[#F4D35E]" placeholder="John Doe" required />
-                  </div>
-                  
-                  <div>
-                    <label className="block text-sm font-bold mb-1">Email *</label>
-                    <input type="email" id="field-email" className="input-field w-full bg-gray-50 border border-gray-200 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-[#F4D35E]" placeholder="john@company.com" required />
-                  </div>
-                  
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm font-bold mb-1">Phone (Optional)</label>
-                      <input 
-                        type="text" 
-                        id="field-phone" 
-                        className="input-field w-full bg-gray-50 border border-gray-200 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-[#F4D35E]" 
-                        placeholder="+1-234-567" 
-                        onChange={handlePhoneValidation}
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-bold mb-1">Brand / Website (Optional)</label>
-                      <input type="text" id="field-website" className="input-field w-full bg-gray-50 border border-gray-200 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-[#F4D35E]" placeholder="buttr.io" />
-                    </div>
-                  </div>
-                  
-                  <button type="submit" className="w-full bg-black text-white py-4 rounded-xl font-bold mt-4 hover:bg-[#F4D35E] hover:text-black transition-all shadow-lg">
-                    Send Request
-                  </button>
-                </form>
-              </div>
-            ) : (
-              <div id="successMessage" className="text-center py-12 animate-in fade-in zoom-in duration-300">
-                <div className="w-20 h-20 bg-[#F4D35E]/20 text-[#D4AF37] rounded-full flex items-center justify-center mx-auto mb-6">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
                 </div>
-                <h3 className="text-3xl font-extrabold mb-4">Thank you!</h3>
-                <p className="text-gray-500 leading-relaxed mb-8">We have received your details. Our team will be in touch with you soon to smooth out your AI strategy.</p>
-                <button onClick={closeModal} className="text-black font-bold underline hover:text-[#D4AF37]">Close</button>
+                
+                <div>
+                  <label className="block text-sm font-bold mb-1">Your Name *</label>
+                  <input type="text" id="field-name" className="input-field w-full bg-gray-50 border border-gray-200 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-[#F4D35E]" placeholder="John Doe" required />
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-bold mb-1">Email *</label>
+                  <input type="email" id="field-email" className="input-field w-full bg-gray-50 border border-gray-200 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-[#F4D35E]" placeholder="john@company.com" required />
+                </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-bold mb-1">Phone (Optional)</label>
+                    <input 
+                      type="text" 
+                      id="field-phone" 
+                      className="input-field w-full bg-gray-50 border border-gray-200 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-[#F4D35E]" 
+                      placeholder="+1-234-567" 
+                      onChange={handlePhoneValidation}
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-bold mb-1">Brand / Website (Optional)</label>
+                    <input type="text" id="field-website" className="input-field w-full bg-gray-50 border border-gray-200 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-[#F4D35E]" placeholder="buttr.io" />
+                  </div>
+                </div>
+                
+                <button type="submit" className="w-full bg-black text-white py-4 rounded-xl font-bold mt-4 hover:bg-[#F4D35E] hover:text-black transition-all shadow-lg">
+                  Send Request
+                </button>
+              </form>
+            </div>
+          ) : (
+            <div id="successMessage" className="text-center py-12 animate-in fade-in zoom-in duration-300">
+              <div className="w-20 h-20 bg-[#F4D35E]/20 text-[#D4AF37] rounded-full flex items-center justify-center mx-auto mb-6">
+                <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
               </div>
-            )}
-          </div>
+              <h3 className="text-3xl font-extrabold mb-4">Thank you!</h3>
+              <p className="text-gray-500 leading-relaxed mb-8">We have received your details. Our team will be in touch with you soon to smooth out your AI strategy.</p>
+              <button onClick={closeModal} className="text-black font-bold underline hover:text-[#D4AF37]">Close</button>
+            </div>
+          )}
         </div>
-      )}
+      </div>
 
       {/* */}
       <nav className="fixed w-full z-50 px-4 md:px-6 py-4">
