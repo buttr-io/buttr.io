@@ -7,7 +7,7 @@
 
 import React, { useRef, useState } from 'react';
 import { motion, useSpring, useMotionValue, useTransform } from 'framer-motion';
-import { AnalyticsModule } from '../types/types';
+import { AnalyticsModule } from './types/types';
 import { ArrowUpRight, Zap, Target } from 'lucide-react';
 import { ArtistCardModal } from './ArtistCardModal';
 

@@ -1,4 +1,3 @@
-import { addToWaitlist } from "@/lib/services/postgressDB";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowRight, CheckCircle2, Loader2, Mail, Phone, Sparkles, User, X } from "lucide-react";
 import { useRef, useState } from "react";
