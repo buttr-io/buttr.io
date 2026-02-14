@@ -3,9 +3,12 @@
 import { NextResponse } from "next/server";
 import crypto from "crypto";
 import { query } from "@/lib/services/neonDB";
+import { withAuthorization } from "@/app/services/authorization/withAuthorization";
+
+const resource = "brands"
 
 // Create new brands
-export async function POST(req: Request) {
+export const POST = withAuthorization(async (req: Request) => {
   const { name } = await req.json();
 
   if (!name) {
@@ -23,4 +26,4 @@ export async function POST(req: Request) {
   );
 
   return NextResponse.json({ brand_id: brandId });
-}
+}, {resource, isBrandScoped: false})

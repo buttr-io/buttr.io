@@ -10,7 +10,7 @@ export async function POST(req: Request) {
   const { email, password } = await req.json();
 
   const result = await query(
-    `SELECT id, password_hash FROM users WHERE email=$1`,
+    `SELECT id, password_hash FROM users WHERE email=$1 AND deleted_at IS NULL;`,
     [email]
   );
 

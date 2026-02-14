@@ -3,50 +3,115 @@ import jwt, { TokenExpiredError } from "jsonwebtoken";
 
 export const runtime = "nodejs";
 
-const PUBLIC_PATHS = [
-  "/",
-  "/login",
-  "/api/login"
-];
+const DASHBOARD_PUBLIC_PATHS = ["/login", "/api/login"];
+
+const inDevMode = process.env.DEV === "true";
 
 export function middleware(req: NextRequest) {
+  const host = req.headers.get("host")!;
   const { pathname } = req.nextUrl;
 
-  // Public routes (no auth)
-  if (PUBLIC_PATHS.includes(pathname)) {
+  const isRootDomain =
+    host === "buttr.io" ||
+    (inDevMode && host === "localhost:3000");
+
+  const isDashboardDomain =
+    host === "dashboard.buttr.io" ||
+    (inDevMode && host === "dashboard.localhost:3000");
+
+  /*
+   * 1️⃣ ROOT DOMAIN (Marketing)
+   */
+  if (isRootDomain) {
+    if (pathname === "/") {
+      return NextResponse.rewrite(new URL("/home", req.url));
+    }
+
     return NextResponse.next();
   }
 
-  const token = req.cookies.get("session")?.value;
+  /*
+   * 2️⃣ DASHBOARD DOMAIN
+   */
+  if (isDashboardDomain) {
 
-  if (!token) {
-    return redirectToLogin(req);
-  }
+    let rewrittenUrl: URL | null = null;
 
-  try {
-    const payload = jwt.verify(
-      token,
-      process.env.JWT_PUBLIC_KEY!,
-      { algorithms: ["RS256"] }
-    ) as { sub: string };
-
-    const requestHeaders = new Headers(req.headers);
-    requestHeaders.set("x-user-id", payload.sub);
-
-    return NextResponse.next({
-      request: { headers: requestHeaders },
-    });
-
-  } catch (err) {
-    if (err instanceof TokenExpiredError) {
-      // Expected case — user session expired
-      return redirectToLogin(req, true);
+    if (pathname === "/") {
+      rewrittenUrl = new URL("/dashboard", req.url);
     }
 
-    // Unexpected JWT error
-    console.error("JWT verification failed:", err);
-    return redirectToLogin(req, true);
+    
+    const token = req.cookies.get("session")?.value;
+    
+    if (DASHBOARD_PUBLIC_PATHS.includes(pathname)) {
+      // If already logged in and visiting /login → redirect to root
+      if (token && pathname === "/login") {
+        try {
+          jwt.verify(
+            token,
+            process.env.JWT_PUBLIC_KEY!,
+            { algorithms: ["RS256"] }
+          );
+          return NextResponse.redirect(new URL("/", req.url));
+        } catch {
+          // invalid token → allow login
+        }
+      }
+
+      return NextResponse.next();
+   }
+
+    if (!token) {
+      return redirectToLogin(req);
+    }
+
+    try {
+      const payload = jwt.verify(
+        token,
+        process.env.JWT_PUBLIC_KEY!,
+        { algorithms: ["RS256"] }
+      ) as { sub: string; exp: number };
+
+      const headers = new Headers(req.headers);
+      headers.set("x-user-id", payload.sub);
+
+      const response = rewrittenUrl
+        ? NextResponse.rewrite(rewrittenUrl, {
+            request: { headers },
+          })
+        : NextResponse.next({
+            request: { headers },
+          });
+
+      // Sliding session logic
+      const now = Math.floor(Date.now() / 1000);
+      const timeLeft = payload.exp - now;
+
+      if (timeLeft < 15 * 60) {
+        const newToken = jwt.sign(
+          { sub: payload.sub },
+          process.env.JWT_PRIVATE_KEY!,
+          { algorithm: "RS256", expiresIn: "1h" }
+        );
+
+        response.cookies.set("session", newToken, {
+          httpOnly: true,
+          secure: true,
+          sameSite: "lax",
+          path: "/",
+        });
+      }
+
+      return response;
+
+    } catch {
+      return redirectToLogin(req, true);
+    }
   }
+
+
+  return NextResponse.next();
 }
 
 function redirectToLogin(req: NextRequest, clearSession = false) {

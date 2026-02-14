@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { getUsersBrand } from "../services/user/user";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -19,25 +20,15 @@ export default function LoginPage() {
 
     if (getUserResponse.ok) {
       // get user's brands
-      const getUsersBrandRes = await getUsersBrand()
-      let brandId = null;
-      if(getUsersBrandRes.brands.length)
-        brandId = getUsersBrandRes.brands[0].id
+      const brands = await getUsersBrand()
+      let brandId = "";
+      if(brands && brands.length)
+        brandId = brands[0].id
 
-      window.location.href = `/dashboard?brand_id=${brandId}`;
+      window.location.href = `/?brand_id=${brandId}`;
     } else {
       alert("Login failed");
     }
-  }
-
-  const getUsersBrand = async () => {
-    const getUsersBrandRes = await (await fetch("/api/users/brands")).json()
-    console.log("User brands",getUsersBrandRes)
-    if(getUsersBrandRes.ok){
-    } else {
-      // Handle error state
-    }
-    return getUsersBrandRes
   }
 
   return (

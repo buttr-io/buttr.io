@@ -2,8 +2,11 @@
 
 import { NextResponse } from "next/server";
 import { query } from "@/lib/services/neonDB";
+import { withAuthorization } from "@/app/services/authorization/withAuthorization";
 
-export async function POST(req: Request) {
+const resource = "permission"
+
+export const POST = withAuthorization(async(req: Request) => {
   const { user_id, brand_id, permission, effect } = await req.json();
 
   if (!user_id || !brand_id || !permission || !effect) {
@@ -58,4 +61,7 @@ export async function POST(req: Request) {
       { status: 500 }
     );
   }
-}
+}, {
+  resource,
+  isBrandScoped: false
+})
