@@ -8,6 +8,11 @@ const DASHBOARD_PUBLIC_PATHS = ["/login", "/api/login"];
 const inDevMode = process.env.DEV === "true";
 
 export function middleware(req: NextRequest) {
+  console.log("process.env.JWT_PRIVATE_KEY: ",
+    process.env.JWT_PRIVATE_KEY?.startsWith("-----BEGIN")
+  );
+  console.log("process.env.JWT_PRIVATE_KEY", process.env.JWT_PRIVATE_KEY?.length);
+
   const host = req.headers.get("host")!;
   const { pathname } = req.nextUrl;
 
@@ -50,7 +55,7 @@ export function middleware(req: NextRequest) {
         try {
           jwt.verify(
             token,
-            process.env.JWT_PUBLIC_KEY!,
+            process.env.JWT_PUBLIC_KEY!.replace(/\\n/g, "\n"),
             { algorithms: ["RS256"] }
           );
           return NextResponse.redirect(new URL("/", req.url));
@@ -69,7 +74,7 @@ export function middleware(req: NextRequest) {
     try {
       const payload = jwt.verify(
         token,
-        process.env.JWT_PUBLIC_KEY!,
+        process.env.JWT_PUBLIC_KEY!.replace(/\\n/g, "\n"),
         { algorithms: ["RS256"] }
       ) as { sub: string; exp: number };
 
@@ -91,7 +96,7 @@ export function middleware(req: NextRequest) {
       if (timeLeft < 15 * 60) {
         const newToken = jwt.sign(
           { sub: payload.sub },
-          process.env.JWT_PRIVATE_KEY!,
+          process.env.JWT_PRIVATE_KEY!.replace(/\\n/g, "\n"),
           { algorithm: "RS256", expiresIn: "1h" }
         );
 

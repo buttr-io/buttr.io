@@ -4,13 +4,15 @@ import jwt from "jsonwebtoken";
 import crypto from "crypto";
 import { serialize } from "cookie";
 
+export const runtime = "nodejs";
+
 export function createSessionToken(userId: string) {
   return jwt.sign(
     {
       sub: userId,
       session_id: crypto.randomUUID(),
     },
-    process.env.JWT_PRIVATE_KEY!,
+    process.env.JWT_PRIVATE_KEY!.replace(/\\n/g, "\n"),
     {
       algorithm: "RS256",
       issuer: "buttr-auth",
