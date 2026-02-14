@@ -27,7 +27,7 @@ export async function POST(req: Request) {
 
   const token = jwt.sign(
     { sub: user.id },
-    process.env.JWT_PRIVATE_KEY!,
+    process.env.JWT_PRIVATE_KEY!.replace(/\\n/g, "\n"),
     { 
       algorithm: "RS256",
       expiresIn: "1h" }
