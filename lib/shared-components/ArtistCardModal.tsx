@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from "framer-motion"
-import { AnalyticsModule } from "../types/types"
+import { AnalyticsModule } from "./types/types"
 import { Dispatch } from "react"
 
 import { X } from 'lucide-react';

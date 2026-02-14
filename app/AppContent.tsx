@@ -8,7 +8,7 @@ import ButterText from '../lib/shared-components/GlitchText';
 import CustomCursor from '../lib/shared-components/CustomCursor';
 import FeatureCard from '../lib/shared-components/ArtistCard';
 import AIChat from '../lib/shared-components/AIChat';
-import { AnalyticsModule } from '../lib/types/types';
+import { AnalyticsModule } from '../lib/shared-components/types/types';
 import { useRouter } from 'next/navigation';
 
 const FEATURES: AnalyticsModule[] = [
