@@ -16,7 +16,7 @@ export const runtime = "nodejs";
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: { provider: string } },
+  { params }: { params: Promise<{ provider: string; }> }
 ) {
   const param_provider = (await params).provider;
   const provider = providers[param_provider as keyof typeof providers];

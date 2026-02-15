@@ -3,7 +3,7 @@ import { providers } from "@/lib/auth/providers";
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: { provider: string } }
+  { params }: { params: Promise<{ provider: string; }> }
 ) {
     
     const param_provider = (await params).provider
