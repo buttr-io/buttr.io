@@ -27,7 +27,7 @@ export function setSessionCookie(res: Response, token: string) {
     "Set-Cookie",
     serialize("session", token, {
       httpOnly: true,
-      secure: true,
+      secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
       domain: ".buttr.io",
       path: "/",

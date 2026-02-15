@@ -55,3 +55,18 @@ CREATE TABLE user_brand_permissions (
 
   PRIMARY KEY (user_id, permission, brand_id)
 );
+
+CREATE TABLE user_identities (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID NOT NULL REFERENCES users(id),
+
+  provider TEXT NOT NULL,
+  provider_user_id TEXT NOT NULL,
+
+  raw_profile JSONB,
+
+  created_at TIMESTAMPTZ DEFAULT now(),
+  deleted_at TIMESTAMPTZ NULL,
+
+  UNIQUE(provider, provider_user_id)
+);

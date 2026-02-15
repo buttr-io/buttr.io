@@ -1,19 +1,16 @@
-"use server";
-
 import { NextResponse } from "next/server";
 
-export async function POST() {
-  const res = NextResponse.json({ success: true, message: "User logged out successfully" });
+export const runtime = "nodejs";
 
-  // Clear session cookie
-  res.cookies.set({
-    name: "session",
-    value: "",
-    expires: new Date(0),
-    path: "/",
+export async function POST() {
+  const res = NextResponse.json({ success: true });
+
+  res.cookies.set("session", "", {
     httpOnly: true,
-    secure: true,
+    secure: process.env.NODE_ENV === "production",
     sameSite: "lax",
+    path: "/",
+    expires: new Date(0),
   });
 
   return res;
