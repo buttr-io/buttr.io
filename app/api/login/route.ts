@@ -1,10 +1,10 @@
-"use server";
-
 import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { serialize } from "cookie";
 import { query } from "@/lib/services/neonDB";
+
+export const runtime = "nodejs";
 
 export async function POST(req: Request) {
   const { email, password } = await req.json();
@@ -30,7 +30,7 @@ export async function POST(req: Request) {
     process.env.JWT_PRIVATE_KEY!.replace(/\\n/g, "\n"),
     { 
       algorithm: "RS256",
-      expiresIn: "1h" }
+      expiresIn: "72h" }
   );
 
   const res = NextResponse.json({ success: true });
@@ -39,7 +39,7 @@ export async function POST(req: Request) {
     "Set-Cookie",
     serialize("session", token, {
       httpOnly: true,
-      secure: true,
+      secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
       path: "/",
     })

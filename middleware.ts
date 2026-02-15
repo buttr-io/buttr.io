@@ -1,27 +1,26 @@
 import { NextRequest, NextResponse } from "next/server";
-import jwt, { TokenExpiredError } from "jsonwebtoken";
+import jwt from "jsonwebtoken";
+import { redirectToLogin } from "./lib/server-redirections";
 
 export const runtime = "nodejs";
 
-const DASHBOARD_PUBLIC_PATHS = ["/login", "/api/login"];
+const DASHBOARD_PUBLIC_PATHS = ["/login", "/api/logout", "/api/login", "/api/auth/google", "/api/auth/google/callback"];
 
 const inDevMode = process.env.DEV === "true";
 
 export function middleware(req: NextRequest) {
-  console.log("process.env.JWT_PRIVATE_KEY: ",
-    process.env.JWT_PRIVATE_KEY?.startsWith("-----BEGIN")
-  );
-  console.log("process.env.JWT_PRIVATE_KEY", process.env.JWT_PRIVATE_KEY?.length);
 
   const host = req.headers.get("host")!;
   const { pathname } = req.nextUrl;
 
   const isRootDomain =
     host === "buttr.io" ||
+    (inDevMode && host === "lvh.me:3000") ||
     (inDevMode && host === "localhost:3000");
 
   const isDashboardDomain =
     host === "dashboard.buttr.io" ||
+    (inDevMode && host === "dashboard.lvh.me:3000") ||
     (inDevMode && host === "dashboard.localhost:3000");
 
   /*
@@ -97,12 +96,12 @@ export function middleware(req: NextRequest) {
         const newToken = jwt.sign(
           { sub: payload.sub },
           process.env.JWT_PRIVATE_KEY!.replace(/\\n/g, "\n"),
-          { algorithm: "RS256", expiresIn: "1h" }
+          { algorithm: "RS256", expiresIn: "72h" }
         );
 
         response.cookies.set("session", newToken, {
           httpOnly: true,
-          secure: true,
+          secure: process.env.NODE_ENV === "production",
           sameSite: "lax",
           path: "/",
         });
@@ -117,26 +116,6 @@ export function middleware(req: NextRequest) {
 
 
   return NextResponse.next();
-}
-
-function redirectToLogin(req: NextRequest, clearSession = false) {
-  const loginUrl = new URL("/login", req.url);
-
-  const res = NextResponse.redirect(loginUrl);
-
-  if (clearSession) {
-    res.cookies.set({
-      name: "session",
-      value: "",
-      path: "/",
-      expires: new Date(0), // delete cookie
-      httpOnly: true,
-      secure: true,
-      sameSite: "lax",
-    });
-  }
-
-  return res;
 }
 
 export const config = {
