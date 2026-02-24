@@ -13,6 +13,7 @@ export default async function DashboardPage({ searchParams }: {searchParams: Pro
     console.log(brandId);
     // If brand_id is not available then we need to get user available brand id's pick the first one
 
+    // Remember: sample to check for Authorization for a page
     if (!await canUser(userId, brandId, permissions.PAGE_DASHBOARD_VIEW)) {
         redirect("/no-access");
     }
