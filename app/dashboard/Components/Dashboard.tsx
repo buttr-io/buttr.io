@@ -1,7 +1,7 @@
 "use client"
 
-import { getUsersBrand, logout } from "@/app/services/user/user";
-import { useEffect, useState } from "react";
+import React, { useState, useMemo, useEffect } from 'react';
+import { getUsersBrand, logout } from "@/app/services/client-side-serivices/user/user";
 
 type Brand = {
     id: string
@@ -26,6 +26,7 @@ const Dashboard = () => {
         <ul>{brands && brands.map((brand: Brand) => {
             return <li key={brand.id}>{brand.name}</li>
         })}
+        
         <button onClick={logout}> 
             Logout
         </button>
@@ -33,4 +34,5 @@ const Dashboard = () => {
     </>
     )
 }
+
 export default Dashboard;

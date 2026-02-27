@@ -1,6 +1,8 @@
+"use server"
+
 import { ApiAction } from "./apiPermissions";
 
-export function actionFromMethod(method: string): ApiAction {
+export async function actionFromMethod(method: string): Promise<ApiAction> {
   switch (method.toUpperCase()) {
     case "GET":
       return "read";

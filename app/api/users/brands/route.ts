@@ -3,7 +3,7 @@
 import { NextResponse } from "next/server";
 import { headers } from "next/headers";
 import { query } from "@/lib/services/neonDB";
-import { withAuthorization } from "@/app/services/authorization/withAuthorization";
+import { withAuthorization } from "@/app/services/server-side-services/authorization/withAuthorization";
 
 type Brand = {
   id: string;
@@ -12,7 +12,7 @@ type Brand = {
 
 const resource = "user_brands";
 
-export const GET = withAuthorization(async () => {
+export const GET = await withAuthorization(async(req: Request) => {
   const userId = (await headers()).get("x-user-id");
   if (!userId) {
     return NextResponse.json(

@@ -3,12 +3,12 @@
 import { NextResponse } from "next/server";
 import crypto from "crypto";
 import { query } from "@/lib/services/neonDB";
-import { withAuthorization } from "@/app/services/authorization/withAuthorization";
+import { withAuthorization } from "@/app/services/server-side-services/authorization/withAuthorization";
 
 const resource = "brands"
 
 // Create new brands
-export const POST = withAuthorization(async (req: Request) => {
+export const POST = await withAuthorization(async (req: Request) => {
   const { name } = await req.json();
 
   if (!name) {
