@@ -514,7 +514,7 @@ const calculateRank = (dataset: any[], brandName: string, modelKey: string, page
   return sorted.findIndex(d => (d.brand || d.brand_name) === brandName) + 1;
 };
 
-const InfoTooltip: FC<{ text?: string }> = ({ text = "some description describing the metric" }) => (
+const InfoTooltip: FC<{ text?: string }> = ({ text = "description describing the metric" }) => (
   <div className="group relative flex items-center ml-2">
     <Info size={16} className="text-slate-400 cursor-help hover:text-blue-500 transition-colors" />
     <div className="pointer-events-none absolute bottom-full mb-2 left-1/2 -translate-x-1/2 w-48 opacity-0 group-hover:opacity-100 transition-opacity bg-slate-900 text-white text-xs p-2 rounded-lg text-center z-50 shadow-xl font-normal normal-case tracking-normal">
@@ -732,7 +732,7 @@ const LeaderboardContent: FC<LeaderboardContentProps> = ({
       {/* Snapshot Cards */}
       <section className="mb-10">
         <div className="flex items-center gap-3 mb-4">
-          <div className="p-1.5 bg-blue-600 rounded-lg text-white"><Star size={18} fill="currentColor" /></div>
+          <div className="p-1.5 bg-yellow-300 rounded-lg text-white"><Star size={18} fill="currentColor" /></div>
           <h2 className="text-lg font-black tracking-tight text-slate-800 uppercase flex items-center">
             SoCheers {currentPage} Snapshot
             <InfoTooltip />
@@ -761,7 +761,8 @@ const LeaderboardContent: FC<LeaderboardContentProps> = ({
       {(currentPage === 'visibility' || currentPage === 'positioning') && (
         <section className="mb-12">
           <div className="flex items-center gap-3 mb-6">
-            <div className="p-1.5 bg-indigo-600 rounded-lg text-white"><Layers size={18} /></div>
+            
+            <div className="p-1.5 bg-yellow-400 rounded-lg text-white"><Layers size={18} /></div>
             <h2 className="text-lg font-black tracking-tight text-slate-800 uppercase leading-none flex items-center">
               Category Dominance
               <InfoTooltip />
@@ -826,7 +827,7 @@ const LeaderboardContent: FC<LeaderboardContentProps> = ({
                    const key = selectedCategory.replace('/', '_').replace('-', '_');
                    const isTarget = item.brand_name === ourBrand;
                    return (
-                     <div key={item.brand_name} className={`flex items-center justify-between p-3 rounded-2xl border ${isTarget ? 'border-indigo-200 bg-indigo-50 shadow-sm ring-1 ring-indigo-100' : 'border-slate-50 bg-slate-50/30'}`}>
+                     <div key={item.brand_name} className={`flex items-center justify-between p-3 rounded-2xl border ${isTarget ? 'border-yellow-200 bg-indigo-50 shadow-sm ring-1 ring-indigo-100' : 'border-slate-50 bg-slate-50/30'}`}>
                         <div className="flex items-center gap-3 overflow-hidden"><span className="text-[10px] font-black text-slate-400 shrink-0">#{i+1}</span><span className={`text-xs font-bold truncate ${isTarget ? 'text-indigo-900' : 'text-slate-700'}`}>{item.brand_name}</span></div>
                         <span className={`text-xs font-black font-mono shrink-0 ${isTarget ? 'text-indigo-600' : 'text-slate-500'}`}>{item[key]}{currentPage === 'visibility' ? '%' : getOrdinal(item[key] as number)}</span>
                      </div>
@@ -835,7 +836,7 @@ const LeaderboardContent: FC<LeaderboardContentProps> = ({
                 {!isSoCheersInNicheTop5 && socheersNicheIndex >= 0 && (
                    <>
                      <button onClick={() => setIsNicheModalOpen(true)} className="w-full py-3 flex items-center justify-center gap-2 text-[10px] font-black uppercase text-slate-400 hover:text-indigo-600 transition-colors"><ChevronDown size={14} /> Reveal niche details <ChevronDown size={14} /></button>
-                     <div className={`flex items-center justify-between p-3 rounded-2xl border border-indigo-200 bg-indigo-50 shadow-md ring-1 ring-indigo-100`}><div className="flex items-center gap-3"><span className="text-[10px] font-black text-indigo-400 shrink-0">#{socheersNicheIndex+1}</span><span className={`text-xs font-black text-indigo-900 truncate`}>SoCheers</span></div><span className={`text-xs font-black font-mono text-indigo-600 shrink-0`}>{categorySortedData[socheersNicheIndex][selectedCategory.replace('/', '_').replace('-', '_')]}{currentPage === 'visibility' ? '%' : getOrdinal(categorySortedData[socheersNicheIndex][selectedCategory.replace('/', '_').replace('-', '_')] as number)}</span></div>
+                     <div className={`flex items-center justify-between p-3 rounded-2xl border border-yellow-200 bg-yellow-50 shadow-md ring-1 ring-yellow-100`}><div className="flex items-center gap-3"><span className="text-[10px] font-black text-yellow-400 shrink-0">#{socheersNicheIndex+1}</span><span className={`text-xs font-black text-yellow-900 truncate`}>SoCheers</span></div><span className={`text-xs font-black font-mono text-yellow-600 shrink-0`}>{categorySortedData[socheersNicheIndex][selectedCategory.replace('/', '_').replace('-', '_')]}{currentPage === 'visibility' ? '%' : getOrdinal(categorySortedData[socheersNicheIndex][selectedCategory.replace('/', '_').replace('-', '_')] as number)}</span></div>
                    </>
                 )}
               </div>
@@ -847,7 +848,9 @@ const LeaderboardContent: FC<LeaderboardContentProps> = ({
       {/* Main Leaderboard Section */}
       <section>
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
-          <h2 className="text-2xl font-black text-slate-900 tracking-tight uppercase leading-none flex items-center">
+
+          <h2 className="text-2xl font-black text-slate-900 tracking-tight uppercase flex items-center">
+          <div className="m-1.5 p-1.5 bg-yellow-300 rounded-lg text-white"><Globe2 size={18} /></div>
             Competitor Ranking
             <InfoTooltip />
           </h2>
@@ -906,7 +909,7 @@ const SourcesContent: FC = () => {
     <div className="space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-700">
       <section>
         <div className="flex items-center gap-3 mb-6 border-b border-slate-200 pb-4">
-          <Globe2 className="text-slate-400" size={24} />
+          <div className="p-1.5 bg-yellow-300 rounded-lg text-white"><Globe2 size={18} /></div>
           <h2 className="text-2xl font-black text-slate-900 tracking-tight uppercase flex items-center">
             1. Overall Market Domains
             <InfoTooltip />
@@ -920,7 +923,7 @@ const SourcesContent: FC = () => {
       </section>
       <section>
         <div className="flex items-center gap-3 mb-6 border-b border-slate-200 pb-4">
-          <Database className="text-slate-400" size={24} />
+          <div className="p-1.5 bg-yellow-300 rounded-lg text-white"><Database size={18} /></div>
           <h2 className="text-2xl font-black text-slate-900 tracking-tight uppercase flex items-center">
             2. SoCheers Specific Domains
             <InfoTooltip />
@@ -1005,12 +1008,12 @@ const Dashboard: FC = () => {
       <aside className={`fixed inset-y-0 left-0 z-50 w-64 bg-white border-r border-slate-200 transform transition-transform duration-300 ease-in-out md:relative md:translate-x-0 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}>
         <div className="flex flex-col h-full">
           <div className="p-6 flex items-center gap-3">
-            <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center text-white font-black text-xl shadow-lg shadow-blue-100">S</div>
-            <div><h2 className="font-black text-lg tracking-tight text-slate-900 leading-none">SoCheers</h2><p className="text-[10px] uppercase font-bold text-slate-400 tracking-widest mt-1 text-nowrap">Intelligence Beta</p></div>
+            <div className="w-10 h-10 bg-yellow-300 rounded-xl flex items-center justify-center text-white font-black text-xl shadow-lg shadow-yellow-100">B</div>
+            <div><h2 className="font-black text-lg tracking-tight text-slate-900 leading-none">Buttr</h2><p className="text-[10px] uppercase font-bold text-slate-400 tracking-widest mt-1 text-nowrap">GEO Intelligence Beta</p></div>
           </div>
           <nav className="flex-1 px-4 py-4 space-y-1">
             {PAGES.map(page => (
-              <button key={page.id} onClick={() => handlePageChange(page.id)} className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-sm transition-all ${currentPage === page.id ? 'bg-blue-50 text-blue-600 shadow-sm' : 'text-slate-500 hover:bg-slate-50 hover:text-slate-800'}`}>
+              <button key={page.id} onClick={() => handlePageChange(page.id)} className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-sm transition-all ${currentPage === page.id ? 'bg-yellow-50 text-yellow-600 shadow-sm' : 'text-slate-500 hover:bg-slate-50 hover:text-slate-800'}`}>
                 {React.createElement(page.icon, { size: 20 })}
                 {page.name}
               </button>
@@ -1038,7 +1041,7 @@ const Dashboard: FC = () => {
           <div className="max-w-5xl mx-auto">
             <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10">
               <div>
-                <h1 className="text-4xl font-black text-slate-900 tracking-tight capitalize">{currentPage} <span className="text-blue-600">Insights</span></h1>
+                <h1 className="text-4xl font-black text-slate-900 tracking-tight capitalize">{currentPage} <span className="text-yellow-400">Insights</span></h1>
                 <p className="text-slate-500 mt-2 max-w-xl text-sm leading-relaxed">{currentPage === 'positioning' ? "Evaluating brand authority and ranking across LLM service categories." : currentPage === 'visibility' ? "Measuring recall percentages and domain share." : currentPage === 'sentiment' ? "Analyzing perception levels across response streams." : "LLM Citation Analysis: Mapping domain visibility across market sources."}</p>
               </div>
               {currentPage !== 'sources' && (
