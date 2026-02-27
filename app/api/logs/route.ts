@@ -6,7 +6,7 @@ import { withAuthorization } from "@/app/services/server-side-services/authoriza
 
 const resource = "logs";
 
-export const GET = withAuthorization(async () => {
+export const GET = await withAuthorization(async () => {
   const result = await query(
     `
     SELECT *

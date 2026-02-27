@@ -12,8 +12,9 @@ export type ActionType =
 export interface Persona {
     id: string;
     title: string;
-    location_id: string;
-    location_level: LocationLevel;
+    // country?: string; // FIX: NEED TO BE REMOVED
+    location_id: string; // FIX: Should not be optional
+    location_level: LocationLevel; // FIX: Should not be optional
     description: string;
     created_at: string;
 }

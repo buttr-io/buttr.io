@@ -1,4 +1,4 @@
-import { LogEntry, Persona, Prompt } from "../types/types";
+import { LocationLevel, LogEntry, Persona, Prompt } from "../types/types";
 
 export const INITIAL_TAGS: string[] = [
   "Coding",
@@ -38,7 +38,8 @@ export const INITIAL_PERSONAS: Persona[] = [
   {
     id: "per-1",
     title: "US Tech Professional",
-    country: "USA",
+    location_id: "USA",
+    location_level: LocationLevel.COUNTRY,
     description:
       "A software engineer or technical product manager based in the US.",
     created_at: new Date(
@@ -48,7 +49,8 @@ export const INITIAL_PERSONAS: Persona[] = [
   {
     id: "per-2",
     title: "German Retail Shopper",
-    country: "Germany",
+    location_id: "Germany",
+    location_level: LocationLevel.COUNTRY,
     description:
       "Value-conscious consumer preferring formal communication.",
     created_at: new Date(
@@ -58,7 +60,8 @@ export const INITIAL_PERSONAS: Persona[] = [
   {
     id: "per-3",
     title: "Global Financial Analyst",
-    country: "Global",
+    location_id: "Global",
+    location_level: LocationLevel.COUNTRY,
     description:
       "Expert in reading balance sheets and identifying market trends.",
     created_at: new Date(

@@ -12,7 +12,7 @@ type Brand = {
 
 const resource = "user_brands";
 
-export const GET = withAuthorization(async () => {
+export const GET = await withAuthorization(async(req: Request) => {
   const userId = (await headers()).get("x-user-id");
   if (!userId) {
     return NextResponse.json(

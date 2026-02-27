@@ -1,11 +1,11 @@
 "use server";
 
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { query } from "@/lib/services/neonDB";
 
-export const PATCH = async (
-  req: Request,
-  { params }: { params: { id: string } }
+export const PATCH = await (async (
+  req: NextRequest, 
+  context: { params: Promise<{ id: string; }> }
 ) => {
   const {
     title,
@@ -21,6 +21,7 @@ export const PATCH = async (
       { status: 400 }
     );
   }
+  const params = await context.params
 
   await query(
     `
@@ -45,11 +46,11 @@ export const PATCH = async (
   );
 
   return NextResponse.json({ success: true });
-};
+});
 
-export const DELETE = async (
-  req: Request,
-  { params }: { params: { id: string } }
+export const DELETE = await (async (
+  req: NextRequest, 
+  context: { params: Promise<{ id: string; }>; }
 ) => {
   const { brandId } = await req.json();
 
@@ -59,6 +60,7 @@ export const DELETE = async (
       { status: 400 }
     );
   }
+  const params = await context.params;
 
   await query(
     `
@@ -72,4 +74,4 @@ export const DELETE = async (
   );
 
   return NextResponse.json({ success: true });
-};
+});

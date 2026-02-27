@@ -8,7 +8,7 @@ import { withAuthorization } from "@/app/services/server-side-services/authoriza
 const resource = "brands"
 
 // Create new brands
-export const POST = withAuthorization(async (req: Request) => {
+export const POST = await withAuthorization(async (req: Request) => {
   const { name } = await req.json();
 
   if (!name) {

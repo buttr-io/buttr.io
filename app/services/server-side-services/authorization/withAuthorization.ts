@@ -42,7 +42,8 @@ export async function withAuthorization(
         { status: 403 }
       );
     }
+    
 
-    return handler(req);
+    return (await handler(req));
   };
 }

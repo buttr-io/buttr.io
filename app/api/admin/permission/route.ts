@@ -6,7 +6,7 @@ import { withAuthorization } from "@/app/services/server-side-services/authoriza
 
 const resource = "permission"
 
-export const POST = withAuthorization(async(req: Request) => {
+export const POST = await withAuthorization(async(req: Request) => {
   const { user_id, brand_id, permission, effect } = await req.json();
 
   if (!user_id || !brand_id || !permission || !effect) {

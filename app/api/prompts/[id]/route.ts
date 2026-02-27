@@ -6,7 +6,7 @@ import { withAuthorization } from "@/app/services/server-side-services/authoriza
 
 const resource = "prompts";
 
-export const PATCH = withAuthorization(async (
+export const PATCH = await withAuthorization(async (
     req: Request,
     { params }: { params: { id: string } }
 ) => {
