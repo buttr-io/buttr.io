@@ -126,4 +126,4 @@ export const config = {
     // - favicon
     "/((?!_next/static|_next/image|favicon.ico).*)",
   ],
-};
+}

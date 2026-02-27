@@ -87,7 +87,8 @@ export const PersonaSelector: FC<PersonaSelectorProps> = ({
                 {p.title}
               </div>
               <div className="text-xs text-gray-500">
-                {p.country}
+                {p.location_id}
+                {p.location_level.toString()}
               </div>
             </button>
           ))}

@@ -2,7 +2,7 @@
 
 import { NextResponse } from "next/server";
 import { query } from "@/lib/services/neonDB";
-import { withAuthorization } from "@/app/services/authorization/withAuthorization";
+import { withAuthorization } from "@/app/services/server-side-services/authorization/withAuthorization";
 
 const resource = "permission"
 

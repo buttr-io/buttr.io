@@ -1,11 +1,13 @@
-export default function RootLayout({
+export default async function RootLayout({
   children
 }: {
   children: React.ReactNode
 }) {
-  return (
-    <>
-      {children}
-    </>  
-  )
+    // TODO: Check for permissions on this page
+
+    return (
+        <>
+          {children}
+        </>  
+    )
 }

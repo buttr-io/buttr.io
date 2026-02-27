@@ -10,11 +10,37 @@ export type ActionType =
 
 
 export interface Persona {
+    id: string;
+    title: string;
+    location_id: string;
+    location_level: LocationLevel;
+    description: string;
+    created_at: string;
+}
+
+export interface City {
   id: string;
-  title: string;
-  country: string;
-  description: string;
-  created_at: string;
+  name: string;
+}
+
+export interface State {
+  id: string;
+  name: string;
+  code: string | null;
+  cities: City[];
+}
+
+export interface Country {
+  id: string;
+  name: string;
+  iso_code: string;
+  states: State[];
+}
+
+export enum LocationLevel {
+  COUNTRY = "COUNTRY",
+  STATE = "STATE",
+  CITY = "CITY"
 }
 
 export interface Prompt {
@@ -47,7 +73,8 @@ export interface PromptFormData {
 export interface PersonaFormData {
   id: string | null;
   title: string;
-  country: string;
+  location_id: string;
+  location_level: LocationLevel;
   description: string;
 }
 

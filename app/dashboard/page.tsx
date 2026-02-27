@@ -1,10 +1,10 @@
 "use server"
 
 import { headers } from "next/headers";
-import Authorization from "../services/authorization/permissions";
-import { canUser } from "../services/authorization/authorization";
+import Authorization from "../services/server-side-services/authorization/permissions";
+import { canUser } from "../services/server-side-services/authorization/authorization";
 import { redirect } from "next/navigation";
-import Dashboard from "./Components/Dashboard";
+import Dashboard from "./Components/Dashboard2";
 const permissions = (await Authorization())
 
 export default async function DashboardPage({ searchParams }: {searchParams: Promise<any>}) {

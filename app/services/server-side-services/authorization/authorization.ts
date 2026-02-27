@@ -43,6 +43,7 @@ export async function canUser(
 
 async function checkSuperAdmin(userId: string){
   // 1️⃣ Super admin short-circuit
+  console.log(userId)
   const superAdmin = await query(
     `
     SELECT 1
@@ -55,7 +56,7 @@ async function checkSuperAdmin(userId: string){
     `,
     [userId, (await permissions()).SUPER_ADMIN_PERMISSION]
   );
-
+  console.log("result of is superAdmin", superAdmin)
   if (superAdmin.length > 0) {
     return true;
   }

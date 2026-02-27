@@ -1,8 +1,10 @@
+"use server"
+
 export type ApiAction = "read" | "write" | "update" | "delete";
 
-export function apiPermission(
+export async function apiPermission(
   resource: string,
   action: ApiAction
-): string {
+): Promise<string> {
   return `api:${resource}:${action}`;
 }

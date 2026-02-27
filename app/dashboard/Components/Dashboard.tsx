@@ -1,7 +1,7 @@
 "use client"
 
-import { useState, useMemo, useEffect } from 'react';
-import { getUsersBrand, logout } from "@/app/services/user/user";
+import React, { useState, useMemo, useEffect } from 'react';
+import { getUsersBrand, logout } from "@/app/services/client-side-serivices/user/user";
 
 type Brand = {
     id: string
@@ -34,5 +34,5 @@ const Dashboard = () => {
     </>
     )
 }
-export default Dashboard;
 
+export default Dashboard;

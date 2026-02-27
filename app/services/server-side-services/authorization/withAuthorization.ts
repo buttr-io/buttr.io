@@ -1,18 +1,20 @@
+"use server"
+
 import { NextResponse } from "next/server";
 import { headers } from "next/headers";
-import { canUser } from "@/app/services/authorization/authorization";
+import { canUser } from "@/app/services/server-side-services/authorization/authorization";
 import { apiPermission } from "./apiPermissions";
 import { actionFromMethod } from "./httpActions";
 
-type Handler = (req: Request) => Promise<Response>;
+type Handler = (req: Request, { params }?: any) => Promise<Response>;
 
-export function withAuthorization(
+export async function withAuthorization(
   handler: Handler,
   options: {
     resource: string;
     isBrandScoped?: boolean; // default true
   }
-): Handler {
+): Promise<Handler> {
   return async function authorizedHandler(req: Request) {
     const userId = (await headers()).get("x-user-id");
 
@@ -23,8 +25,8 @@ export function withAuthorization(
       );
     }
 
-    const action = actionFromMethod(req.method);
-    const permission = apiPermission(options.resource, action);
+    const action = await actionFromMethod(req.method);
+    const permission = await apiPermission(options.resource, action);
 
     // Extract brand_id if applicable
     const url = new URL(req.url);
