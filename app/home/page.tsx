@@ -1,41 +1,14 @@
 "use client"
 
-import { addToWaitlist } from "@/lib/services/postgressDB";
 import React, { useState, useEffect, useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
-
-export type FormValues = {
-  name: string;
-  email: string;
-  contact_number: string;
-  brand: string;
-  purpose: string;
-}
-
-const recordWaitlistSignup = async (data: FormValues) => {
-  // akalgutkar: Not sure why we are doing this. Recheck & remove if unnecessary.
-
-  const existing = JSON.parse(localStorage.getItem('buttr_waitlist') || '[]');
-  localStorage.setItem('buttr_waitlist', JSON.stringify([...existing, { ...data, date: new Date().toISOString() }]));
-
-  // API Call
-  return new Promise((resolve) => setTimeout(() => {
-    const res = addToWaitlist(data)
-    resolve(res)
-  }, 1500));
-};
+import { Navbar } from "./components/Navbar";
+import { ContactModal } from "./components/ContactModal";
 
 const App: React.FC = () => {
   // --- State Management ---
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [formStep, setFormStep] = useState<'input' | 'success'>('input');
-  const [formValues, setFormValues] = useState<FormValues>({
-    name: '',
-    email: '',
-    contact_number: '',
-    brand: '',
-    purpose: 'I want a novel AI/ML solution'
-  });
+  const [activePurpose, setActivePurpose] = useState<string>('I want a novel AI/ML solution');
 
   // --- Refs for Animation ---
   const trailRef = useRef<HTMLDivElement>(null);
@@ -47,8 +20,7 @@ const App: React.FC = () => {
 
   // --- Modal Functions ---
   const openForm = (purpose?: string) => {
-    if (purpose) setFormValues({ ...formValues, purpose: purpose });
-    setFormStep('input');
+    if (purpose) setActivePurpose(purpose);
     setIsModalOpen(true);
     document.body.style.overflow = 'hidden';
   };
@@ -56,17 +28,6 @@ const App: React.FC = () => {
   const closeModal = () => {
     setIsModalOpen(false);
     document.body.style.overflow = 'auto';
-  };
-
-  const handleFormSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    // Get values directly from the form form-data or refs
-    // For this simple example, we just check validity and toggle state
-    const form = e.target as HTMLFormElement;
-    if (form.checkValidity()) {
-      await recordWaitlistSignup(formValues);
-      setFormStep('success');
-    }
   };
 
   // --- Effect: Cursor Trail Animation ---
@@ -135,144 +96,10 @@ const App: React.FC = () => {
       <div ref={trailRef} id="trail" className="cursor-trail fixed top-0 left-0 w-5 h-5 bg-[#F4D35E] rounded-full pointer-events-none z-[9999] opacity-0 mix-blend-difference"></div>
 
       {/* Modal Form */}
-      <div
-        id="contactModal"
-        className={`modal-overlay fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm transition-all duration-300 ${isModalOpen ? 'active opacity-100 visible pointer-events-auto' : 'opacity-0 invisible pointer-events-none'
-          }`}
-        onClick={closeModal}
-      >
-        <div
-          className={`modal-content bg-white p-8 md:p-10 shadow-2xl relative w-full max-w-lg rounded-3xl mx-4 transition-all duration-300 transform ${isModalOpen ? 'scale-100 translate-y-0' : 'scale-95 translate-y-4'
-            }`}
-          onClick={(e) => e.stopPropagation()}
-        >
-          <button onClick={closeModal} className="absolute top-6 right-6 text-gray-400 hover:text-black transition-colors">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-          </button>
-
-          {formStep === 'input' ? (
-            <div id="formContainer">
-              <h3 className="text-3xl font-extrabold mb-2">Let's connect.</h3>
-              <p className="text-gray-500 mb-8 text-sm">Tell us about your project and we'll get back to you within 24 hours.</p>
-
-              <form id="strategyForm" onSubmit={handleFormSubmit} className="space-y-5">
-                <div>
-                  <label className="block text-sm font-bold mb-1">Purpose</label>
-                  <div className="relative">
-                    <select
-                      id="field-purpose"
-                      className="input-field w-full bg-gray-50 border border-gray-200 rounded-lg p-3 appearance-none cursor-pointer pr-10 focus:outline-none focus:ring-2 focus:ring-[#F4D35E]"
-                      value={formValues.purpose}
-                      onChange={(e) => setFormValues({ ...formValues, purpose: e.target.value })}
-                    >
-                      <option value="I want a novel AI/ML solution">I want a novel AI/ML solution</option>
-                      <option value="I want to get a free GEO brand audit done">I want to get a free GEO brand audit done</option>
-                      <option value="I want to discuss my GEO strategy">I want to discuss my GEO strategy</option>
-                      <option value="I want to join the waitlist for the GEO monitoring Saas">I want to join the waitlist for the GEO monitoring Saas</option>
-                      <option value="Other query">Other query</option>
-                    </select>
-                    <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="m6 9 6 6 6-6" /></svg>
-                    </div>
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-bold mb-1">Your Name *</label>
-                  <input
-                    id="field-name"
-                    value={formValues.name}
-                    type="text"
-                    className="input-field w-full bg-gray-50 border border-gray-200 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-[#F4D35E]"
-                    onChange={e => {
-                      setFormValues({ ...formValues, name: e.target.value })
-                    }}
-                    placeholder="John Doe" required />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-bold mb-1">Email *</label>
-                  <input
-                    id="field-email"
-                    value={formValues.email}
-                    type="email"
-                    className="input-field w-full bg-gray-50 border border-gray-200 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-[#F4D35E]"
-                    onChange={e => {
-                      setFormValues({ ...formValues, email: e.target.value })
-                    }}
-                    placeholder="john@company.com" required />
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-bold mb-1">Phone (Optional)</label>
-                    <input
-                      value={formValues.contact_number}
-                      type="text"
-                      id="field-phone"
-                      className="input-field w-full bg-gray-50 border border-gray-200 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-[#F4D35E]"
-                      placeholder="+1-234-567"
-                      onChange={e => {
-                        const newNumber = e.target.value;
-                        if (newNumber != "" &&
-                          (newNumber[newNumber.length - 1] < "0" || newNumber[newNumber.length - 1] > "9") || // Number check
-                          (newNumber.length > 20) // Number check
-                        ) return
-
-                        setFormValues({ ...formValues, contact_number: newNumber })
-                      }}
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-bold mb-1">Brand / Website (Optional)</label>
-                    <input
-                      type="text"
-                      value={formValues.brand}
-                      id="field-website"
-                      className="input-field w-full bg-gray-50 border border-gray-200 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-[#F4D35E]"
-                      onChange={e => {
-                        setFormValues({ ...formValues, brand: e.target.value })
-                      }}
-                      placeholder="brand.com" />
-                  </div>
-                </div>
-
-                <button type="submit" className="w-full bg-black text-white py-4 rounded-xl font-bold mt-4 hover:bg-[#F4D35E] hover:text-black transition-all shadow-lg">
-                  Send Request
-                </button>
-              </form>
-            </div>
-          ) : (
-            <div id="successMessage" className="text-center py-12 animate-in fade-in zoom-in duration-300">
-              <div className="w-20 h-20 bg-[#F4D35E]/20 text-[#D4AF37] rounded-full flex items-center justify-center mx-auto mb-6">
-                <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-              </div>
-              <h3 className="text-3xl font-extrabold mb-4">Thank you!</h3>
-              <p className="text-gray-500 leading-relaxed mb-8">We have received your details. Our team will be in touch with you soon to smooth out your AI strategy.</p>
-              <button onClick={closeModal} className="text-black font-bold underline hover:text-[#D4AF37]">Close</button>
-            </div>
-          )}
-        </div>
-      </div>
+      <ContactModal isOpen={isModalOpen} onClose={closeModal} initialPurpose={activePurpose} />
 
       {/* */}
-      <nav className="fixed w-full z-50 px-4 md:px-6 py-4">
-        <div className="max-w-7xl mx-auto flex justify-between items-center glass bg-white/70 backdrop-blur-md rounded-full px-6 md:px-8 py-3 border border-black/5 shadow-sm">
-          <div className="text-xl md:text-2xl font-extrabold tracking-tighter">buttr<span className="text-[#F4D35E]">.io</span></div>
-          <div className="hidden md:flex space-x-8 font-medium text-sm uppercase tracking-widest">
-            <a href="#services" className="nav-link hover:text-[#F4D35E] transition-colors">AI Services</a>
-            <a href="#geo-strategy" className="nav-link hover:text-[#F4D35E] transition-colors">GEO Agency</a>
-            <a href="#saas" className="nav-link hover:text-[#F4D35E] transition-colors">SaaS Dashboard</a>
-            <a href="#" className="nav-link hover:text-[#F4D35E] transition-colors">Blogs</a>
-          </div>
-          <div>
-            <button onClick={() => openForm('I want to get a free GEO brand audit done')}
-              className="bg-black text-white px-4 md:px-6 py-2 rounded-full text-xs md:text-sm font-semibold hover:bg-[#F4D35E] hover:text-black transition-colors">
-              Free Audit
-            </button>
-          </div>
-        </div>
-      </nav>
+      <Navbar onOpenForm={openForm} />
 
       {/* */}
       <section className="min-h-screen flex flex-col justify-between items-center text-center px-4 md:px-6 pt-32 pb-12 relative bg-[#FFFDF5] overflow-hidden">
