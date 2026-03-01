@@ -244,7 +244,7 @@ const App: React.FC = () => {
                 <p className="text-sm text-gray-500 leading-relaxed">Identify exactly which websites are feeding model answers.</p>
               </div>
             </div>
-            <button
+            <button onClick={() => openForm('I want to join the waitlist for the GEO monitoring Saas')}
               className="mt-10 md:mt-12 bg-[#F4D35E] text-black px-10 md:px-12 py-4 rounded-full font-bold hover:scale-105 transition-transform shadow-lg shadow-[#F4D35E]/10 w-full md:w-auto">
               Get Early Access
             </button>
@@ -255,7 +255,7 @@ const App: React.FC = () => {
       {/* */}
       <footer className="py-24 px-4 bg-[#FFFDF5] text-center">
         <h2 className="text-4xl md:text-6xl font-extrabold mb-8">Stay smooth.</h2>
-        <button onClick={() => openForm('Other query')}
+        <button onClick={() => openForm('I want to discuss my GEO strategy')}
           className="bg-black text-white px-12 py-5 rounded-full font-bold text-lg hover:bg-[#F4D35E] hover:text-black transition-all">
           Book a Strategy Call
         </button>

@@ -1,4 +1,4 @@
-import { addToWaitlist } from "@/lib/services/postgressDB";
+import { addToWaitlist } from "@/lib/services/addToWaitlist";
 import React, { useState, useEffect } from "react";
 
 export type FormValues = {
@@ -16,6 +16,7 @@ const recordWaitlistSignup = async (data: FormValues) => {
     // API Call
     return new Promise((resolve, reject) => setTimeout(async () => {
         try {
+            console.log("data: ", data);
             const res = await addToWaitlist(data);
             resolve(res);
         } catch (error) {
