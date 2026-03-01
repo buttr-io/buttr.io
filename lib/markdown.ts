@@ -25,6 +25,28 @@ export async function getMarkdownBySlug(slug: string[]) {
   }
 }
 
+export interface BlogPostMeta {
+  slug: string[]
+  title: string
+  description?: string
+  date?: string
+}
+
+export function getAllBlogPosts(): BlogPostMeta[] {
+  const slugs = getAllMarkdownSlugs()
+  return slugs.map((slug) => {
+    const fullPath = path.join(CONTENT_DIR, ...slug) + '.md'
+    const file = fs.readFileSync(fullPath, 'utf8')
+    const { data } = matter(file)
+    return {
+      slug,
+      title: (data.title as string) ?? slug[slug.length - 1],
+      description: data.description as string | undefined,
+      date: data.date as string | undefined,
+    }
+  })
+}
+
 export function getAllMarkdownSlugs(): string[][] {
   function walk(dir: string, acc: string[] = []) {
     const entries = fs.readdirSync(dir, { withFileTypes: true })
